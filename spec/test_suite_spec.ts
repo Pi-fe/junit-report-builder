@@ -1,257 +1,275 @@
-TestSuite = require '../lib/test_suite'
+import TestSuite = require('../src/test_suite');
 
 
-describe 'Test Suite builder', ->
-  testSuite = null
-  parentElement = null
-  testSuiteElement = null
-  propertiesElement = null
-  testCase = null
+describe('Test Suite builder', () => {
+  let testSuite: TestSuite;
+  let parentElement: any;
+  let testSuiteElement: any;
+  let propertiesElement: any;
+  let testCase: any;
 
 
-  beforeEach ->
-    factory = jasmine.createSpyObj 'factory', ['newTestCase']
-    testCase = jasmine.createSpyObj 'testCase', ['build', 'getFailureCount', 'getErrorCount', 'getSkippedCount']
+  beforeEach(() => {
+    const factory = jasmine.createSpyObj('factory', ['newTestCase']);
+    testCase = jasmine.createSpyObj('testCase', ['build', 'getFailureCount', 'getErrorCount', 'getSkippedCount']);
 
-    factory.newTestCase.and.callFake () ->
-      return testCase
+    factory.newTestCase.and.callFake(() => testCase);
 
-    parentElement = jasmine.createSpyObj 'parentElement', ['ele']
-    testSuiteElement = jasmine.createSpyObj 'testSuiteElement', ['ele']
-    propertiesElement = jasmine.createSpyObj 'propertiesElement', ['ele']
+    parentElement = jasmine.createSpyObj('parentElement', ['ele']);
+    testSuiteElement = jasmine.createSpyObj('testSuiteElement', ['ele']);
+    propertiesElement = jasmine.createSpyObj('propertiesElement', ['ele']);
 
-    testSuite = new TestSuite factory
+    testSuite = new TestSuite(factory);
 
-    parentElement.ele.and.callFake (elementName) ->
-      switch elementName
-        when 'testsuite' then return testSuiteElement
+    parentElement.ele.and.callFake((elementName: any) => {
+      switch (elementName) {
+        case 'testsuite': return testSuiteElement;
+      }
+    });
 
-    testSuiteElement.ele.and.callFake (elementName) ->
-      switch elementName
-        when 'properties' then return propertiesElement
+    testSuiteElement.ele.and.callFake((elementName: any) => {
+      switch (elementName) {
+        case 'properties': return propertiesElement;
+      }
+    });
 
-    testCase.getFailureCount.and.callFake () ->
-      return 0
+    testCase.getFailureCount.and.callFake(() => 0);
 
-    testCase.getErrorCount.and.callFake () ->
-      return 0
+    testCase.getErrorCount.and.callFake(() => 0);
 
-    testCase.getSkippedCount.and.callFake () ->
-      return 0
+    return testCase.getSkippedCount.and.callFake(() => 0);
+  });
 
 
-  it 'should create a testsuite element when building', ->
-    testSuite.build parentElement
+  it('should create a testsuite element when building', () => {
+    testSuite.build(parentElement);
 
-    expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
       tests: 0
-    }))
+    }));
+  });
 
 
-  it 'should add the provided name as an attribute', ->
-    testSuite.name 'suite name'
+  it('should add the provided name as an attribute', () => {
+    testSuite.name('suite name');
 
-    testSuite.build parentElement
+    testSuite.build(parentElement);
 
-    expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
       name: 'suite name'
-    }))
+    }));
+  });
 
 
-  it 'should count the number of testcase elements', ->
-    testSuite.testCase()
+  it('should count the number of testcase elements', () => {
+    testSuite.testCase();
 
-    testSuite.build parentElement
+    testSuite.build(parentElement);
 
-    expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
       tests: 1
-    }))
+    }));
+  });
 
 
-  it 'should add the provided time as an attribute', ->
-    testSuite.time 12.3
+  it('should add the provided time as an attribute', () => {
+    testSuite.time(12.3);
 
-    testSuite.build parentElement
+    testSuite.build(parentElement);
 
-    expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
       time: 12.3
-    }))
+    }));
+  });
 
 
-  it 'should add the provided timestamp as an attribute', ->
-    testSuite.timestamp '2014-10-21T12:36:58'
+  it('should add the provided timestamp as an attribute', () => {
+    testSuite.timestamp('2014-10-21T12:36:58');
 
-    testSuite.build parentElement
+    testSuite.build(parentElement);
 
-    expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
       timestamp: '2014-10-21T12:36:58'
-    }))
+    }));
+  });
 
 
-  it 'should format the provided timestamp date and add it as an attribute', ->
-    testSuite.timestamp new Date(2015, 10, 22, 13, 37, 59, 123)
+  it('should format the provided timestamp date and add it as an attribute', () => {
+    testSuite.timestamp(new Date(2015, 10, 22, 13, 37, 59, 123));
 
-    testSuite.build parentElement
+    testSuite.build(parentElement);
 
-    expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
       timestamp: '2015-11-22T13:37:59'
-    }))
+    }));
+  });
 
 
-  it 'should add the provided property as elements', ->
-    testSuite.property 'property name', 'property value'
+  it('should add the provided property as elements', () => {
+    testSuite.property('property name', 'property value');
 
-    testSuite.build parentElement
+    testSuite.build(parentElement);
 
-    expect(propertiesElement.ele).toHaveBeenCalledWith('property', {
+    return expect(propertiesElement.ele).toHaveBeenCalledWith('property', {
       name: 'property name',
       value: 'property value'
-    })
+    });
+  });
 
 
-  it 'should add all the provided properties as elements', ->
-    testSuite.property 'name 1', 'value 1'
-    testSuite.property 'name 2', 'value 2'
+  it('should add all the provided properties as elements', () => {
+    testSuite.property('name 1', 'value 1');
+    testSuite.property('name 2', 'value 2');
 
-    testSuite.build parentElement
+    testSuite.build(parentElement);
 
     expect(propertiesElement.ele).toHaveBeenCalledWith('property', {
       name: 'name 1',
       value: 'value 1'
-    })
-    expect(propertiesElement.ele).toHaveBeenCalledWith('property', {
+    });
+    return expect(propertiesElement.ele).toHaveBeenCalledWith('property', {
       name: 'name 2',
       value: 'value 2'
-    })
+    });
+  });
 
 
-  it 'should pass testsuite element to the test case when building', ->
-    testSuite.testCase()
+  it('should pass testsuite element to the test case when building', () => {
+    testSuite.testCase();
 
-    testSuite.build parentElement
+    testSuite.build(parentElement);
 
-    expect(testCase.build).toHaveBeenCalledWith(testSuiteElement)
-
-
-  it 'should pass testsuite element to all created test cases when building', ->
-    testSuite.testCase()
-    testSuite.testCase()
-
-    testSuite.build parentElement
-
-    expect(testCase.build.calls.count()).toEqual(2)
-    expect(testCase.build.calls.argsFor(0)).toEqual([testSuiteElement])
-    expect(testCase.build.calls.argsFor(1)).toEqual([testSuiteElement])
+    return expect(testCase.build).toHaveBeenCalledWith(testSuiteElement);
+  });
 
 
-  it 'should return the newly created test case', ->
-    expect(testSuite.testCase()).toEqual(testCase)
+  it('should pass testsuite element to all created test cases when building', () => {
+    testSuite.testCase();
+    testSuite.testCase();
+
+    testSuite.build(parentElement);
+
+    expect(testCase.build.calls.count()).toEqual(2);
+    expect(testCase.build.calls.argsFor(0)).toEqual([testSuiteElement]);
+    return expect(testCase.build.calls.argsFor(1)).toEqual([testSuiteElement]);
+  });
 
 
-  it 'should return itself when configuring property', ->
-    expect(testSuite.property('name', 'value')).toEqual(testSuite)
+  it('should return the newly created test case', () => expect(testSuite.testCase()).toEqual(testCase));
 
 
-  it 'should return itself when configuring name', ->
-    expect(testSuite.name('name')).toEqual(testSuite)
+  it('should return itself when configuring property', () => expect(testSuite.property('name', 'value')).toEqual(testSuite));
 
-  describe 'failure count', ->
-    it 'should not report any failures when no test cases', ->
-      testSuite.build parentElement
 
-      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+  it('should return itself when configuring name', () => expect(testSuite.name('name')).toEqual(testSuite));
+
+  describe('failure count', () => {
+    it('should not report any failures when no test cases', () => {
+      testSuite.build(parentElement);
+
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
         failures: 0
-      }))
+      }));
+    });
 
 
-    it 'should not report any failures when no test cases failed', ->
-      testSuite.testCase()
-      testSuite.testCase()
+    it('should not report any failures when no test cases failed', () => {
+      testSuite.testCase();
+      testSuite.testCase();
 
-      testSuite.build parentElement
+      testSuite.build(parentElement);
 
-      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
         failures: 0
-      }))
+      }));
+    });
 
 
-    it 'should report two failures when two test cases failed', ->
-      testCase.getFailureCount.and.callFake () ->
-        return 1
+    return it('should report two failures when two test cases failed', () => {
+      testCase.getFailureCount.and.callFake(() => 1);
 
-      testSuite.testCase()
-      testSuite.testCase()
+      testSuite.testCase();
+      testSuite.testCase();
 
-      testSuite.build parentElement
+      testSuite.build(parentElement);
 
-      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
         failures: 2
-      }))
+      }));
+    });
+  });
 
 
-  describe 'error count', ->
-    it 'should not report any errors when no test cases', ->
-      testSuite.build parentElement
+  describe('error count', () => {
+    it('should not report any errors when no test cases', () => {
+      testSuite.build(parentElement);
 
-      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
         errors: 0
-      }))
+      }));
+    });
 
 
-    it 'should not report any errors when no test cases errored', ->
-      testSuite.testCase()
-      testSuite.testCase()
+    it('should not report any errors when no test cases errored', () => {
+      testSuite.testCase();
+      testSuite.testCase();
 
-      testSuite.build parentElement
+      testSuite.build(parentElement);
 
-      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
         errors: 0
-      }))
+      }));
+    });
 
 
-    it 'should report two errors when two test cases errored', ->
-      testCase.getErrorCount.and.callFake () ->
-        return 1
+    return it('should report two errors when two test cases errored', () => {
+      testCase.getErrorCount.and.callFake(() => 1);
 
-      testSuite.testCase()
-      testSuite.testCase()
+      testSuite.testCase();
+      testSuite.testCase();
 
-      testSuite.build parentElement
+      testSuite.build(parentElement);
 
-      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
         errors: 2
-      }))
+      }));
+    });
+  });
 
 
-  describe 'skipped count', ->
-    it 'should not report any skipped when no test cases', ->
-      testSuite.build parentElement
+  return describe('skipped count', () => {
+    it('should not report any skipped when no test cases', () => {
+      testSuite.build(parentElement);
 
-      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
         skipped: 0
-      }))
+      }));
+    });
 
 
-    it 'should not report any skipped when no test cases errored', ->
-      testSuite.testCase()
-      testSuite.testCase()
+    it('should not report any skipped when no test cases errored', () => {
+      testSuite.testCase();
+      testSuite.testCase();
 
-      testSuite.build parentElement
+      testSuite.build(parentElement);
 
-      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
         skipped: 0
-      }))
+      }));
+    });
 
 
-    it 'should report two skipped when two test cases errored', ->
-      testCase.getSkippedCount.and.callFake () ->
-        return 1
+    return it('should report two skipped when two test cases errored', () => {
+      testCase.getSkippedCount.and.callFake(() => 1);
 
-      testSuite.testCase()
-      testSuite.testCase()
+      testSuite.testCase();
+      testSuite.testCase();
 
-      testSuite.build parentElement
+      testSuite.build(parentElement);
 
-      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
         skipped: 2
-      }))
+      }));
+    });
+  });
+});

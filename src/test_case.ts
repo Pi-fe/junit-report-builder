@@ -52,7 +52,7 @@ class TestCase {
     return this;
   }
 
-  failure(message: string, type: string): TestCase {
+  failure(message?: string, type?: string): TestCase {
     this._failure = true;
     if (message) {
       this._failureAttributes.message = message;
@@ -63,7 +63,7 @@ class TestCase {
     return this;
   }
 
-  error(message: string, type: string, content: string): TestCase {
+  error(message?: string, type?: string, content?: string): TestCase {
     this._error = true;
     if (message) {
       this._errorAttributes.message = message;
