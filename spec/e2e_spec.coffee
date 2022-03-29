@@ -1,4 +1,4 @@
-builder = require('../' + require('../package').main.replace('.js', ''))
+builder = require('junit-report-builder')
 rmdir = require 'rimraf'
 fs = require 'fs'
 
