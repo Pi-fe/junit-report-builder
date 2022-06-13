@@ -2,7 +2,6 @@ let builder = require('junit-report-builder');
 const rmdir = require('rimraf');
 const fs = require('fs');
 
-
 describe('JUnit Report builder', () => {
 
   beforeEach(() => {

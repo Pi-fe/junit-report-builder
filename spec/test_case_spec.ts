@@ -10,7 +10,14 @@ describe('Test Case builder', () => {
   let systemOutElement: any;
   let systemErrElement: any;
 
-  const createElementMock = (elementName: string) => jasmine.createSpyObj(elementName, ['ele', 'cdata', 'att', 'txt']);
+  const createElementMock = (elementName: string) => {
+    return {
+      ele: jest.fn(),
+      cdata: jest.fn(),
+      att: jest.fn(),
+      txt: jest.fn(),
+    }
+  };
 
   beforeEach(() => {
     testCase = new TestCase();
@@ -21,13 +28,13 @@ describe('Test Case builder', () => {
     systemOutElement = createElementMock('systemOutElement');
     systemErrElement = createElementMock('systemErrElement');
 
-    parentElement.ele.and.callFake((elementName: any) => {
+    parentElement.ele.mockImplementation((elementName: any) => {
       switch (elementName) {
         case 'testcase': return testCaseElement;
       }
     });
 
-    testCaseElement.ele.and.callFake((elementName: any) => {
+    testCaseElement.ele.mockImplementation((elementName: any) => {
       switch (elementName) {
         case 'failure': return failureElement;
         case 'skipped': return skippedElement;
@@ -36,7 +43,7 @@ describe('Test Case builder', () => {
       }
     });
 
-    return systemErrElement.cdata.and.callFake((stdError: any) => {
+    return systemErrElement.cdata.mockImplementation((stdError: any) => {
       switch (stdError) {
         case 'Error with screenshot': return systemErrElement;
       }
@@ -178,7 +185,7 @@ describe('Test Case builder', () => {
     it('should not create a system-out tag when nothing logged', () => {
       testCase.build(parentElement);
 
-      return expect(testCaseElement.ele).not.toHaveBeenCalledWith('system-out', jasmine.anything());
+      return expect(testCaseElement.ele).not.toHaveBeenCalledWith('system-out', expect.anything());
     });
 
 
@@ -207,7 +214,7 @@ describe('Test Case builder', () => {
     it('should not create a system-err tag when nothing logged', () => {
       testCase.build(parentElement);
 
-      return expect(testCaseElement.ele).not.toHaveBeenCalledWith('system-err', jasmine.anything());
+      return expect(testCaseElement.ele).not.toHaveBeenCalledWith('system-err', expect.anything());
     });
 
 

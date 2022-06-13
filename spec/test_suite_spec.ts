@@ -1,6 +1,5 @@
 import TestSuite = require('../src/test_suite');
 
-
 describe('Test Suite builder', () => {
   let testSuite: TestSuite;
   let parentElement: any;
@@ -10,41 +9,58 @@ describe('Test Suite builder', () => {
 
 
   beforeEach(() => {
-    const factory = jasmine.createSpyObj('factory', ['newTestCase']);
-    testCase = jasmine.createSpyObj('testCase', ['build', 'getFailureCount', 'getErrorCount', 'getSkippedCount']);
+    const factory = {
+      newBuilder: jest.fn(),
+      newTestSuite: jest.fn(),
+      newTestCase: jest.fn(),
+    };
 
-    factory.newTestCase.and.callFake(() => testCase);
+    testCase = {
+      build: jest.fn(),
+      getFailureCount: jest.fn(),
+      getErrorCount: jest.fn(),
+      getSkippedCount: jest.fn(),
+    }
 
-    parentElement = jasmine.createSpyObj('parentElement', ['ele']);
-    testSuiteElement = jasmine.createSpyObj('testSuiteElement', ['ele']);
-    propertiesElement = jasmine.createSpyObj('propertiesElement', ['ele']);
+    factory.newTestCase.mockImplementation(() => testCase);
+
+    parentElement = {
+      ele: jest.fn(),
+    };
+
+    testSuiteElement = {
+      ele: jest.fn(),
+    };
+    propertiesElement = {
+      ele: jest.fn(),
+    };
 
     testSuite = new TestSuite(factory);
 
-    parentElement.ele.and.callFake((elementName: any) => {
+    parentElement.ele.mockImplementation((elementName: any) => {
       switch (elementName) {
         case 'testsuite': return testSuiteElement;
       }
     });
 
-    testSuiteElement.ele.and.callFake((elementName: any) => {
+    testSuiteElement.ele.mockImplementation((elementName: any) => {
       switch (elementName) {
         case 'properties': return propertiesElement;
       }
     });
 
-    testCase.getFailureCount.and.callFake(() => 0);
+    testCase.getFailureCount.mockImplementation(() => 0);
 
-    testCase.getErrorCount.and.callFake(() => 0);
+    testCase.getErrorCount.mockImplementation(() => 0);
 
-    return testCase.getSkippedCount.and.callFake(() => 0);
+    return testCase.getSkippedCount.mockImplementation(() => 0);
   });
 
 
   it('should create a testsuite element when building', () => {
     testSuite.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
       tests: 0
     }));
   });
@@ -55,7 +71,7 @@ describe('Test Suite builder', () => {
 
     testSuite.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
       name: 'suite name'
     }));
   });
@@ -66,7 +82,7 @@ describe('Test Suite builder', () => {
 
     testSuite.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
       tests: 1
     }));
   });
@@ -77,7 +93,7 @@ describe('Test Suite builder', () => {
 
     testSuite.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
       time: 12.3
     }));
   });
@@ -88,7 +104,7 @@ describe('Test Suite builder', () => {
 
     testSuite.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
       timestamp: '2014-10-21T12:36:58'
     }));
   });
@@ -99,7 +115,7 @@ describe('Test Suite builder', () => {
 
     testSuite.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
       timestamp: '2015-11-22T13:37:59'
     }));
   });
@@ -149,9 +165,9 @@ describe('Test Suite builder', () => {
 
     testSuite.build(parentElement);
 
-    expect(testCase.build.calls.count()).toEqual(2);
-    expect(testCase.build.calls.argsFor(0)).toEqual([testSuiteElement]);
-    return expect(testCase.build.calls.argsFor(1)).toEqual([testSuiteElement]);
+    expect(testCase.build.mock.calls.length).toEqual(2);
+    expect(testCase.build.mock.calls[0]).toEqual([testSuiteElement]);
+    return expect(testCase.build.mock.calls[1]).toEqual([testSuiteElement]);
   });
 
 
@@ -167,7 +183,7 @@ describe('Test Suite builder', () => {
     it('should not report any failures when no test cases', () => {
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         failures: 0
       }));
     });
@@ -179,21 +195,21 @@ describe('Test Suite builder', () => {
 
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         failures: 0
       }));
     });
 
 
     return it('should report two failures when two test cases failed', () => {
-      testCase.getFailureCount.and.callFake(() => 1);
+      testCase.getFailureCount.mockImplementation(() => 1);
 
       testSuite.testCase();
       testSuite.testCase();
 
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         failures: 2
       }));
     });
@@ -204,7 +220,7 @@ describe('Test Suite builder', () => {
     it('should not report any errors when no test cases', () => {
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         errors: 0
       }));
     });
@@ -216,21 +232,21 @@ describe('Test Suite builder', () => {
 
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         errors: 0
       }));
     });
 
 
     return it('should report two errors when two test cases errored', () => {
-      testCase.getErrorCount.and.callFake(() => 1);
+      testCase.getErrorCount.mockImplementation(() => 1);
 
       testSuite.testCase();
       testSuite.testCase();
 
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         errors: 2
       }));
     });
@@ -241,7 +257,7 @@ describe('Test Suite builder', () => {
     it('should not report any skipped when no test cases', () => {
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         skipped: 0
       }));
     });
@@ -253,21 +269,21 @@ describe('Test Suite builder', () => {
 
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         skipped: 0
       }));
     });
 
 
     return it('should report two skipped when two test cases errored', () => {
-      testCase.getSkippedCount.and.callFake(() => 1);
+      testCase.getSkippedCount.mockImplementation(() => 1);
 
       testSuite.testCase();
       testSuite.testCase();
 
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', jasmine.objectContaining({
+      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         skipped: 2
       }));
     });
