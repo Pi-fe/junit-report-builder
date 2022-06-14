@@ -65,6 +65,8 @@ License
 
 Changelog
 ---------
+### 4.0.0
+- Dropped support for node.js 8 and 10
 
 ### 3.0.1
 - Bump dependencies: lodash, make-dir, date-format, minimist
