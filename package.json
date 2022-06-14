@@ -6,7 +6,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "format": "prettier --write src/**/*.ts",
+    "format": "prettier --write src/**/*.ts spec/**/*.ts **/*.json **/*.yml",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build && require-self",
     "prepublishOnly": "npm run test",
@@ -37,13 +37,35 @@
   },
   "jest": {
     "maxWorkers": "1",
-    "testMatch": [
-      "**/spec/**/*.[jt]s?(x)",
-      "**/?(*.)+(spec|test).[tj]s?(x)"
-    ],
-    "transform": {
-      "^.+\\.ts?$": "ts-jest"
-    }
+    "projects": [
+      {
+        "displayName": "test",
+        "testMatch": [
+          "**/spec/**/*.[jt]s?(x)",
+          "**/?(*.)+(spec|test).[tj]s?(x)"
+        ],
+        "transform": {
+          "^.+\\.ts?$": "ts-jest"
+        }
+      },
+      {
+        "displayName": "prettier",
+        "runner": "prettier",
+        "moduleFileExtensions": [
+          "ts",
+          "json",
+          "yaml",
+          "yml"
+        ],
+        "testMatch": [
+          "<rootDir>/src/**/*.ts",
+          "<rootDir>/spec/**/*.ts",
+          "**/*.json",
+          "**/*.yaml",
+          "**/*.yml"
+        ]
+      }
+    ]
   },
   "devDependencies": {
     "@types/jest": "^28.1.1",
@@ -56,6 +78,7 @@
     "grunt-jasmine-nodejs": "1.4.0",
     "grunt-release": "^0.12.0",
     "jest": "^28.1.1",
+    "jest-runner-prettier": "^1.0.0",
     "jit-grunt": "^0.9.1",
     "prettier": "^2.6.0",
     "release-it": "^15.1.3",
