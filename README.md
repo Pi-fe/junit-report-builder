@@ -66,6 +66,7 @@ License
 Changelog
 ---------
 ### 4.0.0
+- Add type definitions, by porting to TypeScript
 - Dropped support for node.js 8 and 10
 
 ### 3.0.1
