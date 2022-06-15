@@ -1,6 +1,5 @@
 import TestCase = require('../src/test_case');
 
-
 describe('Test Case builder', () => {
   let testCase: TestCase;
   let parentElement: any;
@@ -16,7 +15,7 @@ describe('Test Case builder', () => {
       cdata: jest.fn(),
       att: jest.fn(),
       txt: jest.fn(),
-    }
+    };
   };
 
   beforeEach(() => {
@@ -30,22 +29,28 @@ describe('Test Case builder', () => {
 
     parentElement.ele.mockImplementation((elementName: any) => {
       switch (elementName) {
-        case 'testcase': return testCaseElement;
+        case 'testcase':
+          return testCaseElement;
       }
     });
 
     testCaseElement.ele.mockImplementation((elementName: any) => {
       switch (elementName) {
-        case 'failure': return failureElement;
-        case 'skipped': return skippedElement;
-        case 'system-out': return systemOutElement;
-        case 'system-err': return systemErrElement;
+        case 'failure':
+          return failureElement;
+        case 'skipped':
+          return skippedElement;
+        case 'system-out':
+          return systemOutElement;
+        case 'system-err':
+          return systemErrElement;
       }
     });
 
     systemErrElement.cdata.mockImplementation((stdError: any) => {
       switch (stdError) {
-        case 'Error with screenshot': return systemErrElement;
+        case 'Error with screenshot':
+          return systemErrElement;
       }
     });
   });
@@ -56,17 +61,15 @@ describe('Test Case builder', () => {
     expect(parentElement.ele).toHaveBeenCalledWith('testcase', {});
   });
 
-
   it('should add the provided class name as an attribute', () => {
     testCase.className('my.Class');
 
     testCase.build(parentElement);
 
     expect(parentElement.ele).toHaveBeenCalledWith('testcase', {
-      classname: 'my.Class'
+      classname: 'my.Class',
     });
   });
-
 
   it('should add the provided name as an attribute', () => {
     testCase.name('my test name');
@@ -74,10 +77,9 @@ describe('Test Case builder', () => {
     testCase.build(parentElement);
 
     expect(parentElement.ele).toHaveBeenCalledWith('testcase', {
-      name: 'my test name'
+      name: 'my test name',
     });
   });
-
 
   it('should add the provided time as an attribute', () => {
     testCase.time(100);
@@ -85,10 +87,9 @@ describe('Test Case builder', () => {
     testCase.build(parentElement);
 
     expect(parentElement.ele).toHaveBeenCalledWith('testcase', {
-      time: 100
+      time: 100,
     });
   });
-
 
   it('should add the provided file as an attribute', () => {
     testCase.file('./path-to/the-test-file.coffee');
@@ -96,10 +97,9 @@ describe('Test Case builder', () => {
     testCase.build(parentElement);
 
     expect(parentElement.ele).toHaveBeenCalledWith('testcase', {
-      file: './path-to/the-test-file.coffee'
+      file: './path-to/the-test-file.coffee',
     });
   });
-
 
   it('should add a failure node when test failed', () => {
     testCase.failure();
@@ -109,17 +109,15 @@ describe('Test Case builder', () => {
     expect(testCaseElement.ele).toHaveBeenCalledWith('failure', {});
   });
 
-
   it('should add a failure node with message when test failed', () => {
     testCase.failure('Failure message');
 
     testCase.build(parentElement);
 
     expect(testCaseElement.ele).toHaveBeenCalledWith('failure', {
-      message: 'Failure message'
+      message: 'Failure message',
     });
   });
-
 
   it('should add the stactrace to the failure node when stacktrace provided', () => {
     testCase.stacktrace('This is a stacktrace');
@@ -129,7 +127,6 @@ describe('Test Case builder', () => {
     expect(failureElement.cdata).toHaveBeenCalledWith('This is a stacktrace');
   });
 
-
   it('should add a failure node with message and stacktrace when both provided', () => {
     testCase.failure('Failure message');
     testCase.stacktrace('This is a stacktrace');
@@ -137,11 +134,10 @@ describe('Test Case builder', () => {
     testCase.build(parentElement);
 
     expect(testCaseElement.ele).toHaveBeenCalledWith('failure', {
-      message: 'Failure message'
+      message: 'Failure message',
     });
     expect(failureElement.cdata).toHaveBeenCalledWith('This is a stacktrace');
   });
-
 
   it('should add a skipped node when test failed', () => {
     testCase.skipped();
@@ -151,7 +147,6 @@ describe('Test Case builder', () => {
     expect(testCaseElement.ele).toHaveBeenCalledWith('skipped');
   });
 
-
   it('should add a failure node when test failed', () => {
     testCase.failure();
 
@@ -159,7 +154,6 @@ describe('Test Case builder', () => {
 
     expect(testCaseElement.ele).toHaveBeenCalledWith('failure', {});
   });
-
 
   it('should add an error node when test errored', () => {
     testCase.error();
@@ -169,17 +163,15 @@ describe('Test Case builder', () => {
     expect(testCaseElement.ele).toHaveBeenCalledWith('error', {});
   });
 
-
   it('should add a error node with message when test errored', () => {
     testCase.error('Error message');
 
     testCase.build(parentElement);
 
     expect(testCaseElement.ele).toHaveBeenCalledWith('error', {
-      message: 'Error message'
+      message: 'Error message',
     });
   });
-
 
   describe('system-out', () => {
     it('should not create a system-out tag when nothing logged', () => {
@@ -187,7 +179,6 @@ describe('Test Case builder', () => {
 
       expect(testCaseElement.ele).not.toHaveBeenCalledWith('system-out', expect.anything());
     });
-
 
     it('should create a system-out tag with the log as a cdata tag', () => {
       testCase.standardOutput('Standard output');
@@ -197,7 +188,6 @@ describe('Test Case builder', () => {
       expect(testCaseElement.ele).toHaveBeenCalledWith('system-out');
       expect(systemOutElement.cdata).toHaveBeenCalledWith('Standard output');
     });
-
 
     it('should only add the last logged content to system-out', () => {
       testCase.standardOutput('Standard output').standardOutput('Second stdout');
@@ -209,14 +199,12 @@ describe('Test Case builder', () => {
     });
   });
 
-
   describe('system-err', () => {
     it('should not create a system-err tag when nothing logged', () => {
       testCase.build(parentElement);
 
       expect(testCaseElement.ele).not.toHaveBeenCalledWith('system-err', expect.anything());
     });
-
 
     it('should create a system-err tag with the log as a cdata tag', () => {
       testCase.standardError('Standard error');
@@ -226,7 +214,6 @@ describe('Test Case builder', () => {
       expect(testCaseElement.ele).toHaveBeenCalledWith('system-err');
       expect(systemErrElement.cdata).toHaveBeenCalledWith('Standard error');
     });
-
 
     it('should only add the last logged content to system-err', () => {
       testCase.standardError('Standard error').standardError('Second stderr');
@@ -249,17 +236,14 @@ describe('Test Case builder', () => {
     });
   });
 
-
   describe('failure counting', () => {
     it('should should have 0 failures when not failed', () => expect(testCase.getFailureCount()).toBe(0));
-
 
     it('should should have 1 failure when failed', () => {
       testCase.failure();
 
       expect(testCase.getFailureCount()).toBe(1);
     });
-
 
     it('should should have 1 failure when failed many times', () => {
       testCase.failure();
@@ -269,17 +253,14 @@ describe('Test Case builder', () => {
     });
   });
 
-
   describe('error counting', () => {
     it('should should have 0 errors when error not called', () => expect(testCase.getErrorCount()).toBe(0));
-
 
     it('should should have 1 error when error called', () => {
       testCase.error();
 
       expect(testCase.getErrorCount()).toBe(1);
     });
-
 
     it('should should have 1 error when error called many times', () => {
       testCase.error();
@@ -289,17 +270,14 @@ describe('Test Case builder', () => {
     });
   });
 
-
   describe('skipped counting', () => {
     it('should be 0 when skipped not called', () => expect(testCase.getSkippedCount()).toBe(0));
-
 
     it('should be 1 when skipped called', () => {
       testCase.skipped();
 
       expect(testCase.getSkippedCount()).toBe(1);
     });
-
 
     it('should be 1 when skipped called many times', () => {
       testCase.skipped();
