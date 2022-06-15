@@ -43,7 +43,7 @@ describe('Test Case builder', () => {
       }
     });
 
-    return systemErrElement.cdata.mockImplementation((stdError: any) => {
+    systemErrElement.cdata.mockImplementation((stdError: any) => {
       switch (stdError) {
         case 'Error with screenshot': return systemErrElement;
       }
@@ -53,7 +53,7 @@ describe('Test Case builder', () => {
   it('should build a testcase element without attributes by default', () => {
     testCase.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testcase', {});
+    expect(parentElement.ele).toHaveBeenCalledWith('testcase', {});
   });
 
 
@@ -62,7 +62,7 @@ describe('Test Case builder', () => {
 
     testCase.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testcase', {
+    expect(parentElement.ele).toHaveBeenCalledWith('testcase', {
       classname: 'my.Class'
     });
   });
@@ -73,7 +73,7 @@ describe('Test Case builder', () => {
 
     testCase.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testcase', {
+    expect(parentElement.ele).toHaveBeenCalledWith('testcase', {
       name: 'my test name'
     });
   });
@@ -84,7 +84,7 @@ describe('Test Case builder', () => {
 
     testCase.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testcase', {
+    expect(parentElement.ele).toHaveBeenCalledWith('testcase', {
       time: 100
     });
   });
@@ -95,7 +95,7 @@ describe('Test Case builder', () => {
 
     testCase.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testcase', {
+    expect(parentElement.ele).toHaveBeenCalledWith('testcase', {
       file: './path-to/the-test-file.coffee'
     });
   });
@@ -106,7 +106,7 @@ describe('Test Case builder', () => {
 
     testCase.build(parentElement);
 
-    return expect(testCaseElement.ele).toHaveBeenCalledWith('failure', {});
+    expect(testCaseElement.ele).toHaveBeenCalledWith('failure', {});
   });
 
 
@@ -115,7 +115,7 @@ describe('Test Case builder', () => {
 
     testCase.build(parentElement);
 
-    return expect(testCaseElement.ele).toHaveBeenCalledWith('failure', {
+    expect(testCaseElement.ele).toHaveBeenCalledWith('failure', {
       message: 'Failure message'
     });
   });
@@ -126,7 +126,7 @@ describe('Test Case builder', () => {
 
     testCase.build(parentElement);
 
-    return expect(failureElement.cdata).toHaveBeenCalledWith('This is a stacktrace');
+    expect(failureElement.cdata).toHaveBeenCalledWith('This is a stacktrace');
   });
 
 
@@ -139,7 +139,7 @@ describe('Test Case builder', () => {
     expect(testCaseElement.ele).toHaveBeenCalledWith('failure', {
       message: 'Failure message'
     });
-    return expect(failureElement.cdata).toHaveBeenCalledWith('This is a stacktrace');
+    expect(failureElement.cdata).toHaveBeenCalledWith('This is a stacktrace');
   });
 
 
@@ -148,7 +148,7 @@ describe('Test Case builder', () => {
 
     testCase.build(parentElement);
 
-    return expect(testCaseElement.ele).toHaveBeenCalledWith('skipped');
+    expect(testCaseElement.ele).toHaveBeenCalledWith('skipped');
   });
 
 
@@ -157,7 +157,7 @@ describe('Test Case builder', () => {
 
     testCase.build(parentElement);
 
-    return expect(testCaseElement.ele).toHaveBeenCalledWith('failure', {});
+    expect(testCaseElement.ele).toHaveBeenCalledWith('failure', {});
   });
 
 
@@ -166,7 +166,7 @@ describe('Test Case builder', () => {
 
     testCase.build(parentElement);
 
-    return expect(testCaseElement.ele).toHaveBeenCalledWith('error', {});
+    expect(testCaseElement.ele).toHaveBeenCalledWith('error', {});
   });
 
 
@@ -175,7 +175,7 @@ describe('Test Case builder', () => {
 
     testCase.build(parentElement);
 
-    return expect(testCaseElement.ele).toHaveBeenCalledWith('error', {
+    expect(testCaseElement.ele).toHaveBeenCalledWith('error', {
       message: 'Error message'
     });
   });
@@ -185,7 +185,7 @@ describe('Test Case builder', () => {
     it('should not create a system-out tag when nothing logged', () => {
       testCase.build(parentElement);
 
-      return expect(testCaseElement.ele).not.toHaveBeenCalledWith('system-out', expect.anything());
+      expect(testCaseElement.ele).not.toHaveBeenCalledWith('system-out', expect.anything());
     });
 
 
@@ -195,17 +195,17 @@ describe('Test Case builder', () => {
       testCase.build(parentElement);
 
       expect(testCaseElement.ele).toHaveBeenCalledWith('system-out');
-      return expect(systemOutElement.cdata).toHaveBeenCalledWith('Standard output');
+      expect(systemOutElement.cdata).toHaveBeenCalledWith('Standard output');
     });
 
 
-    return it('should only add the last logged content to system-out', () => {
+    it('should only add the last logged content to system-out', () => {
       testCase.standardOutput('Standard output').standardOutput('Second stdout');
 
       testCase.build(parentElement);
 
       expect(systemOutElement.cdata).not.toHaveBeenCalledWith('Standard output');
-      return expect(systemOutElement.cdata).toHaveBeenCalledWith('Second stdout');
+      expect(systemOutElement.cdata).toHaveBeenCalledWith('Second stdout');
     });
   });
 
@@ -214,7 +214,7 @@ describe('Test Case builder', () => {
     it('should not create a system-err tag when nothing logged', () => {
       testCase.build(parentElement);
 
-      return expect(testCaseElement.ele).not.toHaveBeenCalledWith('system-err', expect.anything());
+      expect(testCaseElement.ele).not.toHaveBeenCalledWith('system-err', expect.anything());
     });
 
 
@@ -224,7 +224,7 @@ describe('Test Case builder', () => {
       testCase.build(parentElement);
 
       expect(testCaseElement.ele).toHaveBeenCalledWith('system-err');
-      return expect(systemErrElement.cdata).toHaveBeenCalledWith('Standard error');
+      expect(systemErrElement.cdata).toHaveBeenCalledWith('Standard error');
     });
 
 
@@ -234,10 +234,10 @@ describe('Test Case builder', () => {
       testCase.build(parentElement);
 
       expect(systemErrElement.cdata).not.toHaveBeenCalledWith('Standard error');
-      return expect(systemErrElement.cdata).toHaveBeenCalledWith('Second stderr');
+      expect(systemErrElement.cdata).toHaveBeenCalledWith('Second stderr');
     });
 
-    return it('should add an attachment to system-err', () => {
+    it('should add an attachment to system-err', () => {
       testCase.standardError('Error with screenshot');
       testCase.errorAttachment('absolute/path/to/attachment');
 
@@ -245,7 +245,7 @@ describe('Test Case builder', () => {
 
       expect(testCaseElement.ele).toHaveBeenCalledWith('system-err');
       expect(systemErrElement.cdata).toHaveBeenCalledWith('Error with screenshot');
-      return expect(systemErrElement.txt).toHaveBeenCalledWith('[[ATTACHMENT|absolute/path/to/attachment]]');
+      expect(systemErrElement.txt).toHaveBeenCalledWith('[[ATTACHMENT|absolute/path/to/attachment]]');
     });
   });
 
@@ -257,15 +257,15 @@ describe('Test Case builder', () => {
     it('should should have 1 failure when failed', () => {
       testCase.failure();
 
-      return expect(testCase.getFailureCount()).toBe(1);
+      expect(testCase.getFailureCount()).toBe(1);
     });
 
 
-    return it('should should have 1 failure when failed many times', () => {
+    it('should should have 1 failure when failed many times', () => {
       testCase.failure();
       testCase.failure();
 
-      return expect(testCase.getFailureCount()).toBe(1);
+      expect(testCase.getFailureCount()).toBe(1);
     });
   });
 
@@ -277,35 +277,35 @@ describe('Test Case builder', () => {
     it('should should have 1 error when error called', () => {
       testCase.error();
 
-      return expect(testCase.getErrorCount()).toBe(1);
+      expect(testCase.getErrorCount()).toBe(1);
     });
 
 
-    return it('should should have 1 error when error called many times', () => {
+    it('should should have 1 error when error called many times', () => {
       testCase.error();
       testCase.error();
 
-      return expect(testCase.getErrorCount()).toBe(1);
+      expect(testCase.getErrorCount()).toBe(1);
     });
   });
 
 
-  return describe('skipped counting', () => {
+  describe('skipped counting', () => {
     it('should be 0 when skipped not called', () => expect(testCase.getSkippedCount()).toBe(0));
 
 
     it('should be 1 when skipped called', () => {
       testCase.skipped();
 
-      return expect(testCase.getSkippedCount()).toBe(1);
+      expect(testCase.getSkippedCount()).toBe(1);
     });
 
 
-    return it('should be 1 when skipped called many times', () => {
+    it('should be 1 when skipped called many times', () => {
       testCase.skipped();
       testCase.skipped();
 
-      return expect(testCase.getSkippedCount()).toBe(1);
+      expect(testCase.getSkippedCount()).toBe(1);
     });
   });
 });

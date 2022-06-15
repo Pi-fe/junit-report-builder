@@ -53,14 +53,14 @@ describe('Test Suite builder', () => {
 
     testCase.getErrorCount.mockImplementation(() => 0);
 
-    return testCase.getSkippedCount.mockImplementation(() => 0);
+    testCase.getSkippedCount.mockImplementation(() => 0);
   });
 
 
   it('should create a testsuite element when building', () => {
     testSuite.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+    expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
       tests: 0
     }));
   });
@@ -71,7 +71,7 @@ describe('Test Suite builder', () => {
 
     testSuite.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+    expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
       name: 'suite name'
     }));
   });
@@ -82,7 +82,7 @@ describe('Test Suite builder', () => {
 
     testSuite.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+    expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
       tests: 1
     }));
   });
@@ -93,7 +93,7 @@ describe('Test Suite builder', () => {
 
     testSuite.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+    expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
       time: 12.3
     }));
   });
@@ -104,7 +104,7 @@ describe('Test Suite builder', () => {
 
     testSuite.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+    expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
       timestamp: '2014-10-21T12:36:58'
     }));
   });
@@ -115,7 +115,7 @@ describe('Test Suite builder', () => {
 
     testSuite.build(parentElement);
 
-    return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+    expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
       timestamp: '2015-11-22T13:37:59'
     }));
   });
@@ -126,7 +126,7 @@ describe('Test Suite builder', () => {
 
     testSuite.build(parentElement);
 
-    return expect(propertiesElement.ele).toHaveBeenCalledWith('property', {
+    expect(propertiesElement.ele).toHaveBeenCalledWith('property', {
       name: 'property name',
       value: 'property value'
     });
@@ -143,7 +143,7 @@ describe('Test Suite builder', () => {
       name: 'name 1',
       value: 'value 1'
     });
-    return expect(propertiesElement.ele).toHaveBeenCalledWith('property', {
+    expect(propertiesElement.ele).toHaveBeenCalledWith('property', {
       name: 'name 2',
       value: 'value 2'
     });
@@ -155,7 +155,7 @@ describe('Test Suite builder', () => {
 
     testSuite.build(parentElement);
 
-    return expect(testCase.build).toHaveBeenCalledWith(testSuiteElement);
+    expect(testCase.build).toHaveBeenCalledWith(testSuiteElement);
   });
 
 
@@ -167,7 +167,7 @@ describe('Test Suite builder', () => {
 
     expect(testCase.build.mock.calls.length).toEqual(2);
     expect(testCase.build.mock.calls[0]).toEqual([testSuiteElement]);
-    return expect(testCase.build.mock.calls[1]).toEqual([testSuiteElement]);
+    expect(testCase.build.mock.calls[1]).toEqual([testSuiteElement]);
   });
 
 
@@ -183,7 +183,7 @@ describe('Test Suite builder', () => {
     it('should not report any failures when no test cases', () => {
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         failures: 0
       }));
     });
@@ -195,13 +195,13 @@ describe('Test Suite builder', () => {
 
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         failures: 0
       }));
     });
 
 
-    return it('should report two failures when two test cases failed', () => {
+    it('should report two failures when two test cases failed', () => {
       testCase.getFailureCount.mockImplementation(() => 1);
 
       testSuite.testCase();
@@ -209,7 +209,7 @@ describe('Test Suite builder', () => {
 
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         failures: 2
       }));
     });
@@ -220,7 +220,7 @@ describe('Test Suite builder', () => {
     it('should not report any errors when no test cases', () => {
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         errors: 0
       }));
     });
@@ -232,13 +232,13 @@ describe('Test Suite builder', () => {
 
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         errors: 0
       }));
     });
 
 
-    return it('should report two errors when two test cases errored', () => {
+    it('should report two errors when two test cases errored', () => {
       testCase.getErrorCount.mockImplementation(() => 1);
 
       testSuite.testCase();
@@ -246,18 +246,18 @@ describe('Test Suite builder', () => {
 
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         errors: 2
       }));
     });
   });
 
 
-  return describe('skipped count', () => {
+  describe('skipped count', () => {
     it('should not report any skipped when no test cases', () => {
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         skipped: 0
       }));
     });
@@ -269,13 +269,13 @@ describe('Test Suite builder', () => {
 
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         skipped: 0
       }));
     });
 
 
-    return it('should report two skipped when two test cases errored', () => {
+    it('should report two skipped when two test cases errored', () => {
       testCase.getSkippedCount.mockImplementation(() => 1);
 
       testSuite.testCase();
@@ -283,7 +283,7 @@ describe('Test Suite builder', () => {
 
       testSuite.build(parentElement);
 
-      return expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
+      expect(parentElement.ele).toHaveBeenCalledWith('testsuite', expect.objectContaining({
         skipped: 2
       }));
     });
