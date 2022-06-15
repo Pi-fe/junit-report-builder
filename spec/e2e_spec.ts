@@ -18,10 +18,12 @@ describe('JUnit Report builder', () => {
   });
 
   const reportWith = (content: string) => {
-    return '<?xml version="1.0" encoding="UTF-8"?>\n' +
-    '<testsuites>\n' +
-      content + '\n' +
-    '</testsuites>'
+    return `
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  ${content.trim()}
+</testsuites>
+    `.trim();
   };
 
   it('should produce a report identical to the expected one', () => {
@@ -44,16 +46,18 @@ describe('JUnit Report builder', () => {
   });
 
 
-  it('should produce an empty list of test suites when nothing reported', () => expect(builder.build()).toBe(
-    '<?xml version="1.0" encoding="UTF-8"?>\n' +
-    '<testsuites/>'));
+  it('should produce an empty list of test suites when nothing reported', () => expect(builder.build()).toBe(`
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites/>
+      `.trim()));
 
 
   it('should produce an empty test suite when a test suite reported', () => {
     builder.testSuite();
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testsuite tests="0" failures="0" errors="0" skipped="0"/>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testsuite tests="0" failures="0" errors="0" skipped="0"/>
+      `)
     );
   });
 
@@ -61,8 +65,9 @@ describe('JUnit Report builder', () => {
   it('should produce a root test case when reported', () => {
     builder.testCase();
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testcase/>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testcase/>
+      `)
     );
   });
 
@@ -70,10 +75,11 @@ describe('JUnit Report builder', () => {
   it('should produce a root test case with failure when reported', () => {
     builder.testCase().failure('it failed');
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testcase>\n' +
-      '    <failure message="it failed"/>\n' +
-      '  </testcase>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testcase>
+    <failure message="it failed"/>
+  </testcase>
+      `)
     );
   });
 
@@ -81,10 +87,11 @@ describe('JUnit Report builder', () => {
   it('should produce a root test case with failure and type when reported', () => {
     builder.testCase().failure('it failed', 'the type');
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testcase>\n' +
-      '    <failure message="it failed" type="the type"/>\n' +
-      '  </testcase>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testcase>
+    <failure message="it failed" type="the type"/>
+  </testcase>
+      `)
     );
   });
 
@@ -92,10 +99,11 @@ describe('JUnit Report builder', () => {
   it('should produce a root test case with error when reported', () => {
     builder.testCase().error('it errored');
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testcase>\n' +
-      '    <error message="it errored"/>\n' +
-      '  </testcase>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testcase>
+    <error message="it errored"/>
+  </testcase>
+      `)
     );
   });
 
@@ -103,10 +111,11 @@ describe('JUnit Report builder', () => {
   it('should produce a root test case with error, type and content when reported', () => {
     builder.testCase().error('it errored', 'the type', 'the content');
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testcase>\n' +
-      '    <error message="it errored" type="the type"><![CDATA[the content]]></error>\n' +
-      '  </testcase>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testcase>
+    <error message="it errored" type="the type"><![CDATA[the content]]></error>
+  </testcase>
+      `)
     );
   });
 
@@ -114,10 +123,11 @@ describe('JUnit Report builder', () => {
   it('should produce a test suite with a test case when reported', () => {
     builder.testSuite().testCase();
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testsuite tests="1" failures="0" errors="0" skipped="0">\n' +
-      '    <testcase/>\n' +
-      '  </testsuite>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testsuite tests="1" failures="0" errors="0" skipped="0">
+    <testcase/>
+  </testsuite>
+      `)
     );
   });
 
@@ -125,12 +135,13 @@ describe('JUnit Report builder', () => {
   it('should produce a test suite with a failed test case when reported', () => {
     builder.testSuite().testCase().failure();
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testsuite tests="1" failures="1" errors="0" skipped="0">\n' +
-      '    <testcase>\n' +
-      '      <failure/>\n' +
-      '    </testcase>\n' +
-      '  </testsuite>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testsuite tests="1" failures="1" errors="0" skipped="0">
+    <testcase>
+      <failure/>
+    </testcase>
+  </testsuite>
+      `)
     );
   });
 
@@ -138,12 +149,13 @@ describe('JUnit Report builder', () => {
   it('should produce a test suite with an errored test case when reported', () => {
     builder.testSuite().testCase().error();
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testsuite tests="1" failures="0" errors="1" skipped="0">\n' +
-      '    <testcase>\n' +
-      '      <error/>\n' +
-      '    </testcase>\n' +
-      '  </testsuite>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testsuite tests="1" failures="0" errors="1" skipped="0">
+    <testcase>
+      <error/>
+    </testcase>
+  </testsuite>
+      `)
     );
   });
 
@@ -151,12 +163,13 @@ describe('JUnit Report builder', () => {
   it('should produce a test suite with a skipped test case when reported', () => {
     builder.testSuite().testCase().skipped();
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testsuite tests="1" failures="0" errors="0" skipped="1">\n' +
-      '    <testcase>\n' +
-      '      <skipped/>\n' +
-      '    </testcase>\n' +
-      '  </testsuite>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testsuite tests="1" failures="0" errors="0" skipped="1">
+    <testcase>
+      <skipped/>
+    </testcase>
+  </testsuite>
+      `)
     );
   });
 
@@ -164,8 +177,9 @@ describe('JUnit Report builder', () => {
   it('should add the reported time to the test sute', () => {
     builder.testSuite().time(2.5);
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testsuite time="2.5" tests="0" failures="0" errors="0" skipped="0"/>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testsuite time="2.5" tests="0" failures="0" errors="0" skipped="0"/>
+      `)
     );
   });
 
@@ -173,8 +187,9 @@ describe('JUnit Report builder', () => {
   it('should add the reported timestamp to the test sute', () => {
     builder.testSuite().timestamp(new Date(2015, 10, 22, 13, 37, 59, 123));
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testsuite timestamp="2015-11-22T13:37:59" tests="0" failures="0" errors="0" skipped="0"/>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testsuite timestamp="2015-11-22T13:37:59" tests="0" failures="0" errors="0" skipped="0"/>
+      `)
     );
   });
 
@@ -182,10 +197,11 @@ describe('JUnit Report builder', () => {
   it('should add the reported time to the test case', () => {
     builder.testSuite().testCase().time(2.5);
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testsuite tests="1" failures="0" errors="0" skipped="0">\n' +
-      '    <testcase time="2.5"/>\n' +
-      '  </testsuite>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testsuite tests="1" failures="0" errors="0" skipped="0">
+    <testcase time="2.5"/>
+  </testsuite>
+      `)
     );
   });
 
@@ -193,12 +209,13 @@ describe('JUnit Report builder', () => {
   it('should print the reported standard output log to system-out', () => {
     builder.testSuite().testCase().standardOutput("This was written to stdout!");
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testsuite tests="1" failures="0" errors="0" skipped="0">\n' +
-      '    <testcase>\n' +
-      '      <system-out><![CDATA[This was written to stdout!]]></system-out>\n' +
-      '    </testcase>\n' +
-      '  </testsuite>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testsuite tests="1" failures="0" errors="0" skipped="0">
+    <testcase>
+      <system-out><![CDATA[This was written to stdout!]]></system-out>
+    </testcase>
+  </testsuite>
+      `)
     );
   });
 
@@ -206,12 +223,13 @@ describe('JUnit Report builder', () => {
   it('should print the reported standard error log to system-err', () => {
     builder.testSuite().testCase().standardError("This was written to stderr!");
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testsuite tests="1" failures="0" errors="0" skipped="0">\n' +
-      '    <testcase>\n' +
-      '      <system-err><![CDATA[This was written to stderr!]]></system-err>\n' +
-      '    </testcase>\n' +
-      '  </testsuite>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testsuite tests="1" failures="0" errors="0" skipped="0">
+    <testcase>
+      <system-err><![CDATA[This was written to stderr!]]></system-err>
+    </testcase>
+  </testsuite>
+      `)
     );
   });
 
@@ -220,15 +238,16 @@ describe('JUnit Report builder', () => {
       .standardError("This was written to stderr!")
       .errorAttachment("absolute/path/to/attachment");
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testsuite tests="1" failures="0" errors="0" skipped="0">\n' +
-      '    <testcase>\n' +
-      '      <system-err>\n' +
-      '        <![CDATA[This was written to stderr!]]>\n' +
-      '        [[ATTACHMENT|absolute/path/to/attachment]]\n' +
-      '      </system-err>\n' +
-      '    </testcase>\n' +
-      '  </testsuite>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testsuite tests="1" failures="0" errors="0" skipped="0">
+    <testcase>
+      <system-err>
+        <![CDATA[This was written to stderr!]]>
+        [[ATTACHMENT|absolute/path/to/attachment]]
+      </system-err>
+    </testcase>
+  </testsuite>
+      `)
     );
   });
 
@@ -237,10 +256,11 @@ describe('JUnit Report builder', () => {
     builder.testSuite().name(2);
     builder.testCase().name(3);
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testcase name="1"/>\n' +
-      '  <testsuite name="2" tests="0" failures="0" errors="0" skipped="0"/>\n' +
-      '  <testcase name="3"/>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testcase name="1"/>
+  <testsuite name="2" tests="0" failures="0" errors="0" skipped="0"/>
+  <testcase name="3"/>
+      `)
     );
   });
 
@@ -248,30 +268,33 @@ describe('JUnit Report builder', () => {
   it('should builder supports emojis in cdata tags', () => {
     builder.testCase().standardOutput('Emoji: 🤦');
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testcase>\n' +
-      '    <system-out><![CDATA[Emoji: 🤦]]></system-out>\n' +
-      '  </testcase>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testcase>
+    <system-out><![CDATA[Emoji: 🤦]]></system-out>
+  </testcase>
+      `)
     );
   });
 
   it('should escape quotes', () => {
     builder.testCase().error('it is "quoted"');
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testcase>\n' +
-      '    <error message="it is &quot;quoted&quot;"/>\n' +
-      '  </testcase>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testcase>
+    <error message="it is &quot;quoted&quot;"/>
+  </testcase>
+      `)
     );
   });
 
   return it('should remove invalid characters', () => {
     builder.testCase().error('Invalid\x00Characters\x08Stripped');
 
-    return expect(builder.build()).toBe(reportWith(
-      '  <testcase>\n' +
-      '    <error message="InvalidCharactersStripped"/>\n' +
-      '  </testcase>')
+    return expect(builder.build()).toBe(reportWith(`
+  <testcase>
+    <error message="InvalidCharactersStripped"/>
+  </testcase>
+      `)
     );
   });
 });
