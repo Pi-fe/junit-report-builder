@@ -19,7 +19,7 @@ jobs:
       - name: npm install, build, and test
         run: |
           npm clean-install
-          npm test -- --selectProjects=test
+          npm test
         env:
           CI: true
 
@@ -36,14 +36,14 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm install, build, and test
+      - name: npm install and check formatting
         run: |
           npm clean-install
-          npm test -- --selectProjects=prettier
+          npm run check-formatting
         env:
           CI: true
 
-  tslint:
+  lint:
     runs-on: ubuntu-latest
 
     strategy:
@@ -56,9 +56,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm install, build, and test
+      - name: npm install, lint
         run: |
           npm clean-install
-          npx tslint --project .
+          npm run lint
         env:
           CI: true
