@@ -12,6 +12,7 @@
     "prepublishOnly": "npm run test",
     "test": "jest --selectProjects=test",
     "check-formatting": "jest --selectProjects=prettier",
+    "check-types": "jest --selectProjects=tsc",
     "release": "release-it"
   },
   "files": [
@@ -73,6 +74,17 @@
           "<rootDir>/src/**/*.ts",
           "<rootDir>/spec/**/*.ts"
         ]
+      },
+      {
+        "runner": "jest-runner-tsc",
+        "displayName": "tsc",
+        "moduleFileExtensions": [
+          "js",
+          "ts"
+        ],
+        "testMatch": [
+          "<rootDir>/**/*.ts"
+        ]
       }
     ]
   },
@@ -93,6 +105,7 @@
     "jest": "^28.1.1",
     "jest-runner-eslint": "^1.0.1",
     "jest-runner-prettier": "^1.0.0",
+    "jest-runner-tsc": "^1.6.0",
     "jit-grunt": "^0.9.1",
     "prettier": "^2.6.0",
     "release-it": "^15.1.3",

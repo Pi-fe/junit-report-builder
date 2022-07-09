@@ -62,3 +62,23 @@ jobs:
           npm run lint
         env:
           CI: true
+
+  tsc:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install, check-types
+        run: |
+          npm clean-install
+          npm run check-types
+        env:
+          CI: true
