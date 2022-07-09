@@ -1,15 +1,19 @@
 import TestCase = require('../src/test_case');
 
+interface IXMLElement {
+  ele: (name: string, value: string) => jest.Mock;
+}
+
 describe('Test Case builder', () => {
   let testCase: TestCase;
-  let parentElement: any;
-  let testCaseElement: any;
-  let failureElement: any;
-  let skippedElement: any;
-  let systemOutElement: any;
-  let systemErrElement: any;
+  let parentElement: IXMLElement;
+  let testCaseElement: IXMLElement;
+  let failureElement: IXMLElement;
+  let skippedElement: IXMLElement;
+  let systemOutElement: IXMLElement;
+  let systemErrElement: IXMLElement;
 
-  const createElementMock = (elementName: string) => {
+  const createElementMock = () => {
     return {
       ele: jest.fn(),
       cdata: jest.fn(),
@@ -27,14 +31,14 @@ describe('Test Case builder', () => {
     systemOutElement = createElementMock('systemOutElement');
     systemErrElement = createElementMock('systemErrElement');
 
-    parentElement.ele.mockImplementation((elementName: any) => {
+    parentElement.ele.mockImplementation((elementName: string) => {
       switch (elementName) {
         case 'testcase':
           return testCaseElement;
       }
     });
 
-    testCaseElement.ele.mockImplementation((elementName: any) => {
+    testCaseElement.ele.mockImplementation((elementName: string) => {
       switch (elementName) {
         case 'failure':
           return failureElement;
@@ -47,7 +51,7 @@ describe('Test Case builder', () => {
       }
     });
 
-    systemErrElement.cdata.mockImplementation((stdError: any) => {
+    systemErrElement.cdata.mockImplementation((stdError: string) => {
       switch (stdError) {
         case 'Error with screenshot':
           return systemErrElement;

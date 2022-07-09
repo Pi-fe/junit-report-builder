@@ -1,11 +1,16 @@
 import TestSuite = require('../src/test_suite');
+import TestCase = require('../src/test_case');
+
+interface IXMLElement {
+  ele: (name: string, value: string) => jest.Mock;
+}
 
 describe('Test Suite builder', () => {
   let testSuite: TestSuite;
-  let parentElement: any;
-  let testSuiteElement: any;
-  let propertiesElement: any;
-  let testCase: any;
+  let parentElement: IXMLElement;
+  let testSuiteElement: IXMLElement;
+  let propertiesElement: IXMLElement;
+  let testCase: TestCase;
 
   beforeEach(() => {
     const factory = {
@@ -36,14 +41,14 @@ describe('Test Suite builder', () => {
 
     testSuite = new TestSuite(factory);
 
-    parentElement.ele.mockImplementation((elementName: any) => {
+    parentElement.ele.mockImplementation((elementName: string) => {
       switch (elementName) {
         case 'testsuite':
           return testSuiteElement;
       }
     });
 
-    testSuiteElement.ele.mockImplementation((elementName: any) => {
+    testSuiteElement.ele.mockImplementation((elementName: string) => {
       switch (elementName) {
         case 'properties':
           return propertiesElement;
